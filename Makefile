@@ -4,6 +4,8 @@ CFLAGS = -m64
 CFILES = client.c server.c tui.c
 OBJECTS = client.o server.o tui.o
 DOBJECTS = dclient.o dserver.o dtui.o
+BIN = client server tui
+DBIN = dclient dserver dtui
 
 all: final debug
 
@@ -13,8 +15,11 @@ final: $(OBJECTS)
 	@echo "you can find it at 'bin/main'"
 	@echo " "
 
-$(OBJECTS): %.o: src/%.cpp
+$(OBJECTS): %.o: src/%.c
 	$(CC) $(CFLAGS) -o bin/$@ -c $^
+
+$(BIN): %: %.o
+	$(CC) $(CFLAGS) bin/$^ -o bin/$@
 
 debug: $(DOBJECTS)
 	$(CC) $(CFLAGS) -g $(addprefix debug/, $(DOBJECTS)) -o debug/main-debug
@@ -22,7 +27,7 @@ debug: $(DOBJECTS)
 	@echo "you can run gdb on 'debug/main-debug'"
 	@echo " "
 
-$(DOBJECTS): %-debug.o: src/%.cpp
+$(DOBJECTS): %-debug.o: src/%.c
 	$(CC) $(CFLAGS) -g -o debug/$@ -c $^
 
 
