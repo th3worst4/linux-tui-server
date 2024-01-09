@@ -1,9 +1,9 @@
-CC = g++
+CC = gcc
 CFLAGS = -m64
 
-CFILES = main.cpp
-OBJECTS = main.o
-DOBJECTS = main-debug.o
+CFILES = client.c server.c tui.c
+OBJECTS = client.o server.o tui.o
+DOBJECTS = dclient.o dserver.o dtui.o
 
 all: final debug
 
