@@ -8,7 +8,7 @@ void error(const char* msg){
 
 int main(int argc, char** argv){
     if(argc < 2){
-	fprintf(stderr, "Wrong usage!\nUse: .\\server <PORT>\n");
+	fprintf(stderr, "Wrong usage!\nUse: %s <PORT>\n", *argv);
 	exit(1);
     }
 
