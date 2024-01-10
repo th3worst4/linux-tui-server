@@ -1,12 +1,38 @@
 #include "includes.h"
-#define SERVER
 
 void error(const char* msg){
     perror(msg);
     exit(1);
 }
 
+void *listening(void *vargp){
+    char buffer[255];
+    int *sockfd = (int *)vargp;
+    while(1){
+	bzero(buffer, 255);
+	int rec = read(*sockfd, buffer, 255); 
+	if(rec < 0) error("Error on reading\n");
+	if(rec == 0) continue;
+	printf(buffer);
+	//printmsg("test"); 
+    }
+}
+
+void *writing(void *vargp){
+    char buffer[255];
+    int *sockfd = (int *)vargp;
+    while(1){
+	bzero(buffer, 255);
+	fgets(buffer, 255, stdin);
+	int send = write(*sockfd, buffer, strlen(buffer));
+	if(send < 0) error("Error on writing\n");		
+    }
+}
+
 int main(int argc, char** argv){
+    pthread_t listen_id;
+    pthread_t write_id;
+    
     if(argc < 2){
 	fprintf(stderr, "Wrong usage!\nUse: %s <PORT>\n", *argv);
 	exit(1);
@@ -41,20 +67,10 @@ int main(int argc, char** argv){
 
     if(newsockfd < 0) error("Error on Accept");
     
-    while(1){
-	bzero(buffer, 255);
-	n = read(newsockfd, buffer, 255);
-	if(n < 0) error("Error on reading\n");
-	printf("Client: %s\n", buffer);
-	bzero(buffer, 255);
-	fgets(buffer, 255, stdin);
-
-	n = write(newsockfd, buffer, strlen(buffer));
-	if(n < 0) error("Error on writing\n");
-
-	int i = strcmp("Bye", buffer);
-	if(!i) break;
-    }
+    pthread_create(&write_id, NULL, writing, &newsockfd);
+    pthread_create(&listen_id, NULL, listening, &newsockfd);
+    pthread_join(listen_id, NULL);
+    pthread_join(write_id, NULL);
 
     close(newsockfd);
     close(sockfd);

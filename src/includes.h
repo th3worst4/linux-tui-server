@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <time.h>
 
 #include <sys/types.h>
@@ -13,3 +14,4 @@
 
 #include <ncurses.h>
 
+#include "tui.h"

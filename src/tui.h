@@ -1,7 +1,16 @@
-#ifdef SERVER
+uint8_t msg_count = 0;
 
-#endif
+void initiate(){
+    initscr();
+    raw();
+    keypad(stdscr, true);
+    noecho();
+    printw("Hi!");
+    refresh();
+}
 
-#ifdef CLIENT
-
-#endif
+void printmsg(char* msg){
+    printw(msg);
+    msg_count++;
+    refresh();
+}
