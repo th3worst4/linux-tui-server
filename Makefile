@@ -18,8 +18,3 @@ $(DOBJECTS): d%.o: src/%.c
 
 $(DBIN): %: %.o
 	$(CC) $(CFLAGS) -g dbg/$^ -o dbg/$@
-
-delete:
-	@echo "removing all not source files"
-	@rm bin/main bin/main.o
-	@rm debug/main-debug debug/main-debug.o
