@@ -2,26 +2,10 @@
 
 char l_buffer[255];
 char w_buffer[255];
-bool print = false;
 
 void error(const char* msg){
     perror(msg);
     exit(1);
-}
-
-void *listening(void *vargp){
-    int *sockfd = (int *)vargp;
-    int rec;
-    while(1){
-	bzero(l_buffer, 255);
-	rec = read(*sockfd, l_buffer, 255); 
-	if(rec < 0) error("Error on reading\n");
-	if(rec == 0) continue;	
-	if(rec > 0){
-	    printw(l_buffer);
-	    refresh();
-	}
-    }
 }
 
 void *writing(void *vargp){
@@ -41,8 +25,6 @@ int main(int argc, char** argv){
     keypad(stdscr, true);
     noecho();
     
-    pthread_t listen_id, write_id;
-
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -68,12 +50,16 @@ int main(int argc, char** argv){
     printw("You are connected");
     refresh();
     
-    //pthread_create(&write_id, NULL, writing, &sockfd);
-    pthread_create(&listen_id, NULL, listening, &sockfd);
-
-    pthread_join(listen_id, NULL);
-    //pthread_join(write_id, NULL);
-
+    int rec;
+    while(1){
+	bzero(l_buffer, 255);
+	rec = read(sockfd, l_buffer, 255); 
+	if(rec < 0) error("Error on reading\n");
+	if(rec == 0) continue;	
+	printw("%s", l_buffer);
+	refresh();
+    }
+    
     close(sockfd);
     return 0;
 }
