@@ -14,4 +14,3 @@
 
 #include <ncurses.h>
 
-#include "tui.h"
