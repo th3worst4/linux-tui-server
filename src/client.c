@@ -11,10 +11,6 @@ void error(const char* msg){
 void *writing(void *vargp){
     int *sockfd = (int *)vargp;
     while(1){
-	bzero(w_buffer, 255);
-	//fgets(w_buffer, 255, stdin);
-	int send = write(*sockfd, w_buffer, strlen(w_buffer));
-	if(send < 0) error("Error on writing\n");		
     }
 }
 
@@ -25,6 +21,7 @@ int main(int argc, char** argv){
 
     initscr();
     raw();
+    nonl();
     keypad(stdscr, true);
     noecho();
     
@@ -64,6 +61,21 @@ int main(int argc, char** argv){
 	if(rec == 0) continue;	
 	printw("(%d:%d) Server: %s", clockinfo->tm_hour, clockinfo->tm_min ,l_buffer);
 	refresh();
+	bzero(w_buffer, 255);
+	for(int i = 0; i < 255; i++){
+	    char input = getch();
+	    if(input == '\r'){
+		w_buffer[i] = '\0';
+		addch('\n');
+		break;
+	    }
+	    addch(input);
+	    w_buffer[i] = input;
+	    refresh();
+	}
+	refresh();
+	int send = write(sockfd, w_buffer, strlen(w_buffer));
+	if(send < 0) error("Error on writing\n");		
     }
     
     close(sockfd);

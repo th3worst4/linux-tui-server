@@ -67,10 +67,10 @@ int main(int argc, char** argv){
 
     if(newsockfd < 0) error("Error on Accept");
     
-    pthread_create(&write_id, NULL, writing, &newsockfd);
+    //pthread_create(&write_id, NULL, writing, &newsockfd);
     pthread_create(&listen_id, NULL, listening, &newsockfd);
     pthread_join(listen_id, NULL);
-    pthread_join(write_id, NULL);
+    //pthread_join(write_id, NULL);
 
     close(newsockfd);
     close(sockfd);
