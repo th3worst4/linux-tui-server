@@ -20,6 +20,9 @@ void *writing(void *vargp){
 
 
 int main(int argc, char** argv){
+    time_t rawclock;
+    struct tm *clockinfo;
+
     initscr();
     raw();
     keypad(stdscr, true);
@@ -47,16 +50,19 @@ int main(int argc, char** argv){
     serv_addr.sin_port = htons(portno);
     if(connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) error("Conection failed\n");
  
-    printw("You are connected");
+    printw("You are connected!\n");
     refresh();
     
     int rec;
     while(1){
+	time(&rawclock);
+	clockinfo = localtime(&rawclock);
+
 	bzero(l_buffer, 255);
 	rec = read(sockfd, l_buffer, 255); 
 	if(rec < 0) error("Error on reading\n");
 	if(rec == 0) continue;	
-	printw("%s", l_buffer);
+	printw("(%d:%d) Server: %s", clockinfo->tm_hour, clockinfo->tm_min ,l_buffer);
 	refresh();
     }
     
