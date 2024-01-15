@@ -55,12 +55,6 @@ int main(int argc, char** argv){
 	time(&rawclock);
 	clockinfo = localtime(&rawclock);
 
-	bzero(l_buffer, 255);
-	rec = read(sockfd, l_buffer, 255); 
-	if(rec < 0) error("Error on reading\n");
-	if(rec == 0) continue;	
-	printw("(%d:%d) Server: %s", clockinfo->tm_hour, clockinfo->tm_min ,l_buffer);
-	refresh();
 	bzero(w_buffer, 255);
 	for(int i = 0; i < 255; i++){
 	    char input = getch();
@@ -75,6 +69,13 @@ int main(int argc, char** argv){
 	}
 	refresh();
 	int send = write(sockfd, w_buffer, strlen(w_buffer));
+	
+	bzero(l_buffer, 255);
+	rec = read(sockfd, l_buffer, 255); 
+	if(rec < 0) error("Error on reading\n");
+	if(rec == 0) continue;	
+	printw("(%d:%d) Server: %s\n", clockinfo->tm_hour, clockinfo->tm_min ,l_buffer);
+	refresh();
 	if(send < 0) error("Error on writing\n");		
     }
     

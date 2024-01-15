@@ -1,11 +1,11 @@
 CC = gcc
 CFLAGS = -m64 -lpthread -lncurses
 
-CFILES = client.c server.c tui.c
-OBJECTS = client.o server.o tui.o
-DOBJECTS = dclient.o dserver.o dtui.o
-BIN = client server tui
-DBIN = dclient dserver dtui
+CFILES = client.c server.c echoserver.c
+OBJECTS = client.o server.o echoserver.o
+DOBJECTS = dclient.o dserver.o dechoserver.o
+BIN = client server echoserver
+DBIN = dclient dserver dechoserver
 
 $(OBJECTS): %.o: src/%.c
 	$(CC) $(CFLAGS) -o bin/$@ -c $^

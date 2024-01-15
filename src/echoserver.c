@@ -5,34 +5,18 @@ void error(const char* msg){
     exit(1);
 }
 
-void *listening(void *vargp){
+void echoing(int sockfd){
     char buffer[255];
-    int *sockfd = (int *)vargp;
     while(1){
 	bzero(buffer, 255);
-	int rec = read(*sockfd, buffer, 255); 
+	int rec = read(sockfd, buffer, 255); 
 	if(rec < 0) error("Error on reading\n");
 	if(rec == 0) continue;
-	printf(buffer);
-	//printmsg("test"); 
+	int send = write(sockfd, buffer, strlen(buffer));
     }
 }
 
-void *writing(void *vargp){
-    char buffer[255];
-    int *sockfd = (int *)vargp;
-    while(1){
-	bzero(buffer, 255);
-	fgets(buffer, 255, stdin);
-	int send = write(*sockfd, buffer, strlen(buffer));
-	if(send < 0) error("Error on writing\n");		
-    }
-}
-
-int main(int argc, char** argv){
-    pthread_t listen_id;
-    pthread_t write_id;
-    
+int main(int argc, char** argv){ 
     if(argc < 2){
 	fprintf(stderr, "Wrong usage!\nUse: %s <PORT>\n", *argv);
 	exit(1);
@@ -68,12 +52,8 @@ int main(int argc, char** argv){
     if(newsockfd < 0) error("Error on Accept");
     printf("Someone connected.\n");
     
-    pthread_create(&write_id, NULL, writing, &newsockfd);
-    //pthread_create(&listen_id, NULL, listening, &newsockfd);
+    echoing(newsockfd);
     
-    pthread_join(write_id, NULL);
-    //pthread_join(listen_id, NULL);
-
     close(newsockfd);
     close(sockfd);
 
